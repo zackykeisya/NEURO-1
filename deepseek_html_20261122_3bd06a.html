@@ -1,0 +1,1965 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NEURO+1 — Adaptive Critical Thinking Lab</title>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ---------- RESET & BASE ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-paper: #F4F3EF;
+      --ink-carbon: #141413;
+      --signal-orange: #FF4F18;
+      --cobalt: #1D4ED8;
+      --grid-line: #E2E0D8;
+      --success: #0F7B3E;
+      --error: #D32F2F;
+      --card-bg: #FFFFFF;
+      --shadow: 0 2px 8px rgba(20, 20, 19, 0.04);
+      --shadow-press: 0 1px 2px rgba(20, 20, 19, 0.02);
+    }
+
+    body {
+      background-color: var(--bg-paper);
+      color: var(--ink-carbon);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image: 
+        linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+      background-size: 40px 40px;
+      background-position: center top;
+      overflow-x: hidden;
+    }
+
+    /* ---------- TYPOGRAPHY ---------- */
+    h1, h2, h3, h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ---------- UTILITY ---------- */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      width: 100%;
+    }
+
+    .accent { color: var(--signal-orange); }
+    .cobalt { color: var(--cobalt); }
+    .success { color: var(--success); }
+    .error { color: var(--error); }
+
+    /* ---------- NAVBAR ---------- */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(244, 243, 239, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--grid-line);
+      padding: 12px 0;
+    }
+
+    .navbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: default;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      background: var(--ink-carbon);
+      color: var(--bg-paper);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      letter-spacing: -0.05em;
+    }
+
+    .logo-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      letter-spacing: -0.03em;
+    }
+
+    .logo-text span {
+      color: var(--signal-orange);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* IQ Telemetry */
+    .iq-telemetry {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ink-carbon);
+      color: var(--bg-paper);
+      padding: 6px 14px;
+      border-radius: 40px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+    }
+
+    .iq-telemetry .badge {
+      font-size: 0.6rem;
+      background: var(--signal-orange);
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      margin-left: 4px;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      transform: translateY(4px);
+    }
+
+    .iq-telemetry .badge.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* API Key Pill */
+    .api-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--card-bg);
+      border: 1px solid var(--grid-line);
+      padding: 6px 14px;
+      border-radius: 40px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.2s ease;
+      color: var(--ink-carbon);
+      user-select: none;
+    }
+
+    .api-pill:hover {
+      border-color: var(--ink-carbon);
+    }
+
+    .api-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 2px rgba(15, 123, 62, 0.2);
+    }
+
+    .api-dot.inactive {
+      background: #F59E0B;
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+    }
+
+    .btn-icon {
+      background: none;
+      border: 1px solid var(--grid-line);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--ink-carbon);
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      background: var(--ink-carbon);
+      color: var(--bg-paper);
+    }
+
+    /* ---------- BUTTONS ---------- */
+    .btn-primary {
+      background: var(--ink-carbon);
+      color: var(--bg-paper);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.1s ease;
+      box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+    }
+
+    .btn-primary:hover {
+      background: #2a2a28;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 0 3px 0 rgba(0,0,0,0.1);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--ink-carbon);
+      border: 1px solid var(--ink-carbon);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 3px 0 rgba(0,0,0,0.05);
+    }
+
+    .btn-outline:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+    }
+
+    .btn-outline:hover {
+      background: var(--ink-carbon);
+      color: var(--bg-paper);
+    }
+
+    /* ---------- CONFIG SCREEN ---------- */
+    .config-screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 0;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .config-card {
+      background: var(--card-bg);
+      border: 1px solid var(--grid-line);
+      border-radius: 16px;
+      padding: 48px;
+      max-width: 640px;
+      width: 100%;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .config-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--signal-orange) 0px,
+        var(--signal-orange) 10px,
+        transparent 10px,
+        transparent 20px
+      );
+      border-radius: 16px 16px 0 0;
+    }
+
+    .config-title {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .config-subtitle {
+      color: rgba(20, 20, 19, 0.6);
+      margin-bottom: 32px;
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 28px;
+    }
+
+    .form-label {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      color: rgba(20, 20, 19, 0.6);
+    }
+
+    .subject-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .subject-pill {
+      padding: 6px 14px;
+      border-radius: 40px;
+      border: 1px solid var(--grid-line);
+      background: var(--bg-paper);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: var(--ink-carbon);
+    }
+
+    .subject-pill:hover {
+      border-color: var(--ink-carbon);
+    }
+
+    .subject-pill.active {
+      background: var(--ink-carbon);
+      color: var(--bg-paper);
+      border-color: var(--ink-carbon);
+    }
+
+    .custom-topic-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--grid-line);
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.9rem;
+      background: var(--bg-paper);
+      outline: none;
+      transition: border-color 0.2s;
+      margin-top: 8px;
+    }
+
+    .custom-topic-input:focus {
+      border-color: var(--ink-carbon);
+    }
+
+    /* Difficulty Segmented Control */
+    .segmented-control {
+      display: flex;
+      background: var(--bg-paper);
+      border: 1px solid var(--grid-line);
+      border-radius: 10px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .segment-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: rgba(20, 20, 19, 0.5);
+    }
+
+    .segment-btn:hover {
+      color: var(--ink-carbon);
+    }
+
+    .segment-btn.active {
+      background: var(--card-bg);
+      color: var(--ink-carbon);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    /* Question Count */
+    .count-options {
+      display: flex;
+      gap: 8px;
+    }
+
+    .count-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--grid-line);
+      background: var(--bg-paper);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .count-btn:hover {
+      border-color: var(--ink-carbon);
+    }
+
+    .count-btn.active {
+      background: var(--ink-carbon);
+      color: var(--bg-paper);
+      border-color: var(--ink-carbon);
+    }
+
+    /* ---------- QUIZ SCREEN ---------- */
+    .quiz-screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 32px 0;
+      animation: fadeIn 0.3s ease;
+      display: none;
+    }
+
+    .quiz-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .quiz-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: rgba(20, 20, 19, 0.6);
+    }
+
+    .timer-badge {
+      background: var(--card-bg);
+      border: 1px solid var(--grid-line);
+      padding: 4px 12px;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .timer-badge .dot {
+      width: 6px;
+      height: 6px;
+      background: var(--signal-orange);
+      border-radius: 50%;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 4px;
+      background: var(--grid-line);
+      border-radius: 4px;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--ink-carbon);
+      width: 0%;
+      transition: width 0.3s ease;
+      border-radius: 4px;
+    }
+
+    .question-card {
+      background: var(--card-bg);
+      border: 1px solid var(--grid-line);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .question-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--signal-orange);
+      margin-bottom: 12px;
+    }
+
+    .question-text {
+      font-size: 1.4rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-bottom: 32px;
+    }
+
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .option-btn {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border: 1px solid var(--grid-line);
+      border-radius: 10px;
+      background: var(--bg-paper);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      color: var(--ink-carbon);
+      width: 100%;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--ink-carbon);
+      background: #fff;
+    }
+
+    .option-btn:active:not(:disabled) {
+      transform: scale(0.995);
+    }
+
+    .option-btn .key-hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      background: var(--grid-line);
+      color: rgba(20, 20, 19, 0.6);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .option-btn.correct {
+      border-color: var(--success);
+      background: rgba(15, 123, 62, 0.05);
+    }
+
+    .option-btn.correct .key-hint {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .option-btn.wrong {
+      border-color: var(--error);
+      background: rgba(211, 47, 47, 0.05);
+      animation: shake 0.3s ease;
+    }
+
+    .option-btn.wrong .key-hint {
+      background: var(--error);
+      color: #fff;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    .option-btn:disabled {
+      cursor: default;
+      opacity: 0.8;
+    }
+
+    .explanation-drawer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      border-top: 1px solid transparent;
+    }
+
+    .explanation-drawer.open {
+      max-height: 300px;
+      border-top-color: var(--grid-line);
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+
+    .explanation-content {
+      background: var(--bg-paper);
+      border-left: 3px solid var(--cobalt);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: rgba(20, 20, 19, 0.8);
+    }
+
+    .explanation-content .tag {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      background: var(--cobalt);
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .quiz-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+    }
+
+    .btn-next {
+      display: none;
+      background: var(--signal-orange);
+      color: #fff;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.1s;
+      box-shadow: 0 3px 0 #B33A10;
+    }
+
+    .btn-next:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #B33A10;
+    }
+
+    .btn-next.show {
+      display: inline-block;
+    }
+
+    /* ---------- RESULTS SCREEN ---------- */
+    .results-screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 0;
+      animation: fadeIn 0.4s ease;
+      display: none;
+    }
+
+    .results-card {
+      background: var(--card-bg);
+      border: 1px solid var(--grid-line);
+      border-radius: 16px;
+      padding: 48px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .results-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    .results-title {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .results-score {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin: 24px 0;
+      color: var(--ink-carbon);
+    }
+
+    .results-score span {
+      font-size: 1.2rem;
+      color: rgba(20, 20, 19, 0.4);
+    }
+
+    .results-stats {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .stat-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      color: rgba(20, 20, 19, 0.5);
+      letter-spacing: 0.05em;
+    }
+
+    .iq-gain-display {
+      background: var(--ink-carbon);
+      color: var(--bg-paper);
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-bottom: 24px;
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* ---------- LEADERBOARD ---------- */
+    .leaderboard-section {
+      padding: 60px 0;
+      background: var(--card-bg);
+      border-top: 1px solid var(--grid-line);
+      border-bottom: 1px solid var(--grid-line);
+      margin-top: auto;
+    }
+
+    .leaderboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .leaderboard-tabs {
+      display: flex;
+      gap: 8px;
+      background: var(--bg-paper);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--grid-line);
+    }
+
+    .lb-tab {
+      padding: 6px 16px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: rgba(20, 20, 19, 0.5);
+      transition: all 0.15s;
+    }
+
+    .lb-tab.active {
+      background: var(--card-bg);
+      color: var(--ink-carbon);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .leaderboard-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .lb-row {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: var(--bg-paper);
+      border: 1px solid var(--grid-line);
+      gap: 16px;
+      transition: all 0.2s;
+    }
+
+    .lb-row.highlight {
+      border-color: var(--signal-orange);
+      background: rgba(255, 79, 24, 0.03);
+    }
+
+    .lb-rank {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: rgba(20, 20, 19, 0.4);
+      width: 24px;
+      text-align: center;
+    }
+
+    .lb-rank.top {
+      color: var(--signal-orange);
+    }
+
+    .lb-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--grid-line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.7rem;
+      color: rgba(20, 20, 19, 0.6);
+      flex-shrink: 0;
+    }
+
+    .lb-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      flex: 1;
+    }
+
+    .lb-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--grid-line);
+      color: rgba(20, 20, 19, 0.6);
+    }
+
+    .lb-iq {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--ink-carbon);
+    }
+
+    /* ---------- MODAL ---------- */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(20, 20, 19, 0.5);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--grid-line);
+      border-radius: 16px;
+      max-width: 480px;
+      width: 90%;
+      padding: 32px;
+      position: relative;
+      transform: translateY(10px) scale(0.98);
+      transition: transform 0.2s;
+      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);
+    }
+
+    .modal-overlay.active .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: rgba(20, 20, 19, 0.4);
+      transition: color 0.2s;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: var(--ink-carbon);
+    }
+
+    .modal h3 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+
+    .modal p {
+      color: rgba(20, 20, 19, 0.6);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .modal-input-group {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .modal-input-group input {
+      width: 100%;
+      padding: 12px 44px 12px 14px;
+      border: 1px solid var(--grid-line);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      outline: none;
+      transition: border-color 0.2s;
+      background: var(--bg-paper);
+    }
+
+    .modal-input-group input:focus {
+      border-color: var(--ink-carbon);
+    }
+
+    .toggle-vis-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(20, 20, 19, 0.4);
+      font-size: 1rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .modal-actions .btn-primary {
+      flex: 1;
+    }
+
+    .link-text {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--cobalt);
+      text-decoration: none;
+      margin-top: 8px;
+    }
+
+    .link-text:hover {
+      text-decoration: underline;
+    }
+
+    /* ---------- BANNER ---------- */
+    .demo-banner {
+      background: #FFF3E0;
+      border-bottom: 1px solid #FFE0B2;
+      padding: 10px 0;
+      text-align: center;
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: #E65100;
+      display: none;
+    }
+
+    .demo-banner.show {
+      display: block;
+    }
+
+    /* ---------- TOAST ---------- */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--ink-carbon);
+      color: var(--bg-paper);
+      padding: 12px 24px;
+      border-radius: 40px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      z-index: 3000;
+      transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+      pointer-events: none;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 768px) {
+      .navbar-inner {
+        flex-wrap: wrap;
+      }
+      .nav-actions {
+        gap: 8px;
+      }
+      .iq-telemetry {
+        font-size: 0.75rem;
+        padding: 4px 10px;
+      }
+      .api-pill {
+        font-size: 0.65rem;
+        padding: 4px 10px;
+      }
+      .config-card {
+        padding: 28px 20px;
+      }
+      .config-title {
+        font-size: 1.5rem;
+      }
+      .question-card {
+        padding: 24px 20px;
+      }
+      .question-text {
+        font-size: 1.1rem;
+      }
+      .option-btn {
+        padding: 12px 14px;
+        font-size: 0.85rem;
+      }
+      .results-card {
+        padding: 32px 20px;
+      }
+      .results-score {
+        font-size: 2.5rem;
+      }
+      .results-stats {
+        gap: 16px;
+      }
+      .lb-row {
+        padding: 10px 12px;
+        gap: 10px;
+      }
+      .lb-badge {
+        display: none;
+      }
+      .quiz-footer {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+      }
+      .btn-next {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- DEMO BANNER -->
+  <div class="demo-banner" id="demoBanner">
+    ⚡ Demo Calibration Mode — Kamu belum pasang Gemini API Key. Pakai puzzle bawaan dulu, atau klik tombol API di pojok kanan atas untuk akses topik AI tanpa batas.
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <div class="logo-group">
+        <div class="logo-mark">N+1</div>
+        <div class="logo-text">NEURO<span>+1</span></div>
+      </div>
+      <div class="nav-actions">
+        <div class="iq-telemetry">
+          <span id="iqDisplay">112</span> IQ
+          <span class="badge" id="iqBadge">+0</span>
+        </div>
+        <button class="api-pill" id="apiPillBtn">
+          <span class="api-dot inactive" id="apiDot"></span>
+          <span id="apiStatusText">API KEY</span>
+        </button>
+        <button class="btn-icon" id="muteBtn" title="Toggle suara">
+          <span id="muteIcon">🔊</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONFIG SCREEN -->
+  <section class="config-screen" id="configScreen">
+    <div class="container">
+      <div class="config-card">
+        <h1 class="config-title">Kalibrasi Sesi.</h1>
+        <p class="config-subtitle">Pilih topik, atur level kesulitan, dan asah nalar kritis lo. Setiap sesi selesai, IQ lo naik +1.</p>
+
+        <div class="form-group">
+          <label class="form-label">Pilih Subject</label>
+          <div class="subject-pills" id="subjectPills">
+            <span class="subject-pill active" data-subject="Logika & Deduksi">Logika & Deduksi</span>
+            <span class="subject-pill" data-subject="Matematika Terapan">Matematika Terapan</span>
+            <span class="subject-pill" data-subject="Strategi Bisnis">Strategi Bisnis</span>
+            <span class="subject-pill" data-subject="Filsafat & Etika">Filsafat & Etika</span>
+            <span class="subject-pill" data-subject="Sains & Paradoks">Sains & Paradoks</span>
+            <span class="subject-pill" data-subject="custom">Custom Topik</span>
+          </div>
+          <input type="text" class="custom-topic-input" id="customTopicInput" placeholder="Tulis topik custom lo (contoh: Sejarah Nusantara, Ekonomi Kripto, dll)" style="display:none;">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tingkat Kesulitan</label>
+          <div class="segmented-control" id="difficultyControl">
+            <button class="segment-btn" data-difficulty="Pemanasan">Pemanasan</button>
+            <button class="segment-btn active" data-difficulty="Nalar Kritis">Nalar Kritis</button>
+            <button class="segment-btn" data-difficulty="Mode Jenius">Mode Jenius</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Jumlah Soal</label>
+          <div class="count-options" id="countOptions">
+            <button class="count-btn" data-count="3">3</button>
+            <button class="count-btn active" data-count="5">5</button>
+            <button class="count-btn" data-count="7">7</button>
+            <button class="count-btn" data-count="10">10</button>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="startQuizBtn" style="width:100%; padding:16px; font-size:1.1rem;">
+          Mulai Sesi +1 IQ →
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ SCREEN -->
+  <section class="quiz-screen" id="quizScreen">
+    <div class="container">
+      <div class="quiz-header">
+        <div class="quiz-meta">
+          <span id="quizProgressText">Soal 1 / 5</span>
+          <div class="timer-badge">
+            <span class="dot"></span>
+            <span class="mono" id="timerDisplay">00:00</span>
+          </div>
+        </div>
+        <div class="mono" style="font-size:0.75rem;opacity:0.5;" id="quizSubjectLabel">Logika & Deduksi</div>
+      </div>
+
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+      </div>
+
+      <div class="question-card">
+        <div class="question-number" id="questionNumber">PERTANYAAN 01</div>
+        <div class="question-text" id="questionText">Memuat soal...</div>
+        <div class="options-grid" id="optionsGrid"></div>
+
+        <div class="explanation-drawer" id="explanationDrawer">
+          <div class="explanation-content" id="explanationContent"></div>
+        </div>
+      </div>
+
+      <div class="quiz-footer">
+        <div style="font-size:0.75rem; opacity:0.5;" class="mono">
+          Shortcut: <strong>1-4</strong> / <strong>A-D</strong> untuk jawab
+        </div>
+        <button class="btn-next" id="nextBtn">Soal Berikutnya →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS SCREEN -->
+  <section class="results-screen" id="resultsScreen">
+    <div class="container">
+      <div class="results-card">
+        <div class="results-icon" id="resultsIcon">🎯</div>
+        <h2 class="results-title" id="resultsTitle">Sesi Selesai!</h2>
+        <p style="color:rgba(20,20,19,0.6); margin-bottom:8px;" id="resultsSubtitle">Lo berhasil naikin IQ lo.</p>
+        
+        <div class="iq-gain-display" id="iqGainDisplay">+1 IQ</div>
+
+        <div class="results-score" id="resultsScoreDisplay">
+          80<span>%</span>
+        </div>
+
+        <div class="results-stats">
+          <div class="stat-item">
+            <div class="stat-value" id="statCorrect">4</div>
+            <div class="stat-label">Benar</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="statWrong">1</div>
+            <div class="stat-label">Salah</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="statAccuracy">80%</div>
+            <div class="stat-label">Akurasi</div>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="retryBtn" style="width:100%;">Main Lagi</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEADERBOARD -->
+  <section class="leaderboard-section">
+    <div class="container">
+      <div class="leaderboard-header">
+        <div>
+          <h2 style="font-size:1.4rem; margin-bottom:4px;">Papan Peringkat</h2>
+          <p style="font-size:0.8rem; color:rgba(20,20,19,0.5);">Siapa yang nalarnya paling tajam hari ini?</p>
+        </div>
+        <div class="leaderboard-tabs">
+          <button class="lb-tab active" data-filter="today">Hari Ini</button>
+          <button class="lb-tab" data-filter="alltime">All-Time</button>
+        </div>
+      </div>
+      <div class="leaderboard-list" id="leaderboardList"></div>
+    </div>
+  </section>
+
+  <!-- API KEY MODAL -->
+  <div class="modal-overlay" id="apiModal">
+    <div class="modal">
+      <button class="modal-close" id="closeApiModal">&times;</button>
+      <h3>Gemini API Key</h3>
+      <p>Pasang key lo buat akses soal AI tanpa batas. Key disimpen di localStorage browser lo doang.</p>
+      
+      <div class="modal-input-group">
+        <input type="password" id="apiKeyInput" placeholder="AQ.Ab8RN6LQ-wvbEojzvhCK...">
+        <button class="toggle-vis-btn" id="toggleVisBtn">👁️</button>
+      </div>
+      
+      <a href="https://aistudio.google.com/app/apikey" target="_blank" class="link-text">↗ Dapetin gratis di Google AI Studio</a>
+
+      <div class="modal-actions">
+        <button class="btn-primary" id="saveApiKeyBtn">Simpan Key</button>
+        <button class="btn-outline" id="clearApiKeyBtn" style="border-color:var(--error); color:var(--error);">Hapus Key</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT -->
+  <!-- ========================================== -->
+  <script>
+    // ======== STATE ========
+    let userApiKey = localStorage.getItem('NEURO1_GEMINI_KEY') || '';
+    let currentIQ = parseInt(localStorage.getItem('NEURO1_IQ')) || 112;
+    let isMuted = localStorage.getItem('NEURO1_MUTE') === 'true';
+
+    let config = {
+      subject: 'Logika & Deduksi',
+      difficulty: 'Nalar Kritis',
+      count: 5
+    };
+
+    let quizState = {
+      questions: [],
+      currentIndex: 0,
+      correctCount: 0,
+      wrongCount: 0,
+      timerInterval: null,
+      timeElapsed: 0,
+      answered: false,
+      sessionIQGain: 0
+    };
+
+    // ======== DOM REFS ========
+    const configScreen = document.getElementById('configScreen');
+    const quizScreen = document.getElementById('quizScreen');
+    const resultsScreen = document.getElementById('resultsScreen');
+    const demoBanner = document.getElementById('demoBanner');
+
+    const iqDisplay = document.getElementById('iqDisplay');
+    const iqBadge = document.getElementById('iqBadge');
+    const apiPillBtn = document.getElementById('apiPillBtn');
+    const apiDot = document.getElementById('apiDot');
+    const apiStatusText = document.getElementById('apiStatusText');
+    const muteBtn = document.getElementById('muteBtn');
+    const muteIcon = document.getElementById('muteIcon');
+
+    const subjectPills = document.getElementById('subjectPills');
+    const customTopicInput = document.getElementById('customTopicInput');
+    const difficultyControl = document.getElementById('difficultyControl');
+    const countOptions = document.getElementById('countOptions');
+    const startQuizBtn = document.getElementById('startQuizBtn');
+
+    const quizProgressText = document.getElementById('quizProgressText');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const quizSubjectLabel = document.getElementById('quizSubjectLabel');
+    const progressBarFill = document.getElementById('progressBarFill');
+    const questionNumber = document.getElementById('questionNumber');
+    const questionText = document.getElementById('questionText');
+    const optionsGrid = document.getElementById('optionsGrid');
+    const explanationDrawer = document.getElementById('explanationDrawer');
+    const explanationContent = document.getElementById('explanationContent');
+    const nextBtn = document.getElementById('nextBtn');
+
+    const resultsIcon = document.getElementById('resultsIcon');
+    const resultsTitle = document.getElementById('resultsTitle');
+    const resultsSubtitle = document.getElementById('resultsSubtitle');
+    const iqGainDisplay = document.getElementById('iqGainDisplay');
+    const resultsScoreDisplay = document.getElementById('resultsScoreDisplay');
+    const statCorrect = document.getElementById('statCorrect');
+    const statWrong = document.getElementById('statWrong');
+    const statAccuracy = document.getElementById('statAccuracy');
+    const retryBtn = document.getElementById('retryBtn');
+
+    const leaderboardList = document.getElementById('leaderboardList');
+    const lbTabs = document.querySelectorAll('.lb-tab');
+
+    const apiModal = document.getElementById('apiModal');
+    const closeApiModal = document.getElementById('closeApiModal');
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    const toggleVisBtn = document.getElementById('toggleVisBtn');
+    const saveApiKeyBtn = document.getElementById('saveApiKeyBtn');
+    const clearApiKeyBtn = document.getElementById('clearApiKeyBtn');
+
+    const toast = document.getElementById('toast');
+
+    // ======== AUDIO ========
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function playTone(freq, type = 'sine', duration = 0.1, vol = 0.1) {
+      if (isMuted) return;
+      initAudio();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function playClick() { playTone(600, 'square', 0.05, 0.05); }
+    function playCorrect() { playTone(880, 'sine', 0.1, 0.1); setTimeout(() => playTone(1320, 'sine', 0.15, 0.08), 80); }
+    function playWrong() { playTone(200, 'sawtooth', 0.15, 0.08); }
+    function playComplete() {
+      [523, 659, 784, 1047].forEach((f, i) => {
+        setTimeout(() => playTone(f, 'sine', 0.2, 0.1), i * 120);
+      });
+    }
+
+    // ======== UI HELPERS ========
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toast._timeout);
+      toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function updateAPIUI() {
+      if (userApiKey) {
+        apiDot.classList.remove('inactive');
+        apiStatusText.textContent = 'API READY';
+        demoBanner.classList.remove('show');
+      } else {
+        apiDot.classList.add('inactive');
+        apiStatusText.textContent = 'API KEY';
+        demoBanner.classList.add('show');
+      }
+    }
+
+    function updateIQDisplay(animated = false) {
+      iqDisplay.textContent = currentIQ;
+      if (animated) {
+        iqBadge.classList.add('show');
+        setTimeout(() => iqBadge.classList.remove('show'), 3000);
+      }
+    }
+
+    function updateMuteUI() {
+      muteIcon.textContent = isMuted ? '🔇' : '🔊';
+    }
+
+    // ======== CONFIG LOGIC ========
+    subjectPills.addEventListener('click', (e) => {
+      const pill = e.target.closest('.subject-pill');
+      if (!pill) return;
+      playClick();
+      subjectPills.querySelectorAll('.subject-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      
+      const val = pill.dataset.subject;
+      if (val === 'custom') {
+        customTopicInput.style.display = 'block';
+        customTopicInput.focus();
+        config.subject = customTopicInput.value.trim() || 'Topik Custom';
+      } else {
+        customTopicInput.style.display = 'none';
+        config.subject = val;
+      }
+    });
+
+    customTopicInput.addEventListener('input', () => {
+      if (customTopicInput.value.trim()) {
+        config.subject = customTopicInput.value.trim();
+      }
+    });
+
+    difficultyControl.addEventListener('click', (e) => {
+      const btn = e.target.closest('.segment-btn');
+      if (!btn) return;
+      playClick();
+      difficultyControl.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      config.difficulty = btn.dataset.difficulty;
+    });
+
+    countOptions.addEventListener('click', (e) => {
+      const btn = e.target.closest('.count-btn');
+      if (!btn) return;
+      playClick();
+      countOptions.querySelectorAll('.count-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      config.count = parseInt(btn.dataset.count);
+    });
+
+    // ======== DEMO QUESTIONS (FALLBACK) ========
+    const demoQuestions = [
+      {
+        question: "Seorang detektif menemukan 3 tersangka: A, B, C. A berkata 'B berbohong'. B berkata 'C berbohong'. C berkata 'A dan B berbohong'. Jika hanya satu orang yang jujur, siapa yang berbohong?",
+        options: ["A dan B", "B dan C", "A dan C", "Semua tersangka"],
+        correctIndex: 2,
+        cognitiveSkillTag: "Deduksi Berlapis",
+        explanation: "Coba anggap A jujur: maka B bohong, berarti C jujur (kontradiksi karena C bilang A bohong). Anggap B jujur: maka C bohong, berarti A jujur (kontradiksi). Anggap C jujur: maka A dan B bohong. Cek: A bohong berarti B jujur (kontradiksi). Jadi tidak ada yang jujur? Tunggu—soal bilang 'hanya satu jujur'. Jika C jujur, A & B bohong. A bohong berarti B jujur—tapi B bohong. Kontradiksi. Jika A jujur, B bohong, C bohong. C bohong berarti A&B tidak keduanya bohong—benar karena A jujur. B bohong berarti C jujur—tapi C bohong. Kontradiksi. Jika B jujur, C bohong, A bohong. A bohong berarti B jujur—benar. C bohong berarti A&B tidak keduanya bohong—benar karena B jujur. Jadi B jujur, A & C bohong. Jawaban: A dan C bohong."
+      },
+      {
+        question: "Sebuah toko buku memberikan diskon 20% untuk semua buku. Kemudian ada promo tambahan 'beli 2 gratis 1'. Jika lo beli 6 buku dengan harga awal Rp100.000/buku, berapa total yang lo bayar?",
+        options: ["Rp480.000", "Rp400.000", "Rp360.000", "Rp320.000"],
+        correctIndex: 3,
+        cognitiveSkillTag: "Matematika Terapan",
+        explanation: "Harga awal 6 buku = 600.000. Diskon 20% → 480.000. Promo 'beli 2 gratis 1' berlaku setelah diskon? Jika beli 6, lo bayar 4 (karena 2 gratis 1, 6 buku = 2 set × (2+1) = 4 bayar + 2 gratis). Total bayar = 4 × (100.000 × 0.8) = 4 × 80.000 = 320.000."
+      },
+      {
+        question: "Dalam sebuah rapat, 5 orang duduk melingkar. Jika A harus duduk bersebelahan dengan B, berapa banyak susunan duduk yang mungkin?",
+        options: ["12", "24", "48", "120"],
+        correctIndex: 0,
+        cognitiveSkillTag: "Kombinatorika",
+        explanation: "Anggap A dan B sebagai satu blok. Total entitas = 4 (blok AB + 3 orang lain). Susunan melingkar 4 entitas = (4-1)! = 6. Dalam blok AB, ada 2 susunan (AB atau BA). Total = 6 × 2 = 12."
+      },
+      {
+        question: "Seorang filsuf berkata: 'Satu-satunya kebenaran adalah tidak ada kebenaran mutlak.' Pernyataan ini termasuk paradoks karena...",
+        options: ["Bertentangan dengan logika formal", "Mengklaim kebenaran mutlak tentang tidak adanya kebenaran mutlak", "Tidak bisa dibuktikan secara empiris", "Hanya berlaku untuk dirinya sendiri"],
+        correctIndex: 1,
+        cognitiveSkillTag: "Paradoks Self-Reference",
+        explanation: "Pernyataan 'tidak ada kebenaran mutlak' itu sendiri adalah klaim kebenaran mutlak. Ini paradoks self-referential klasik, mirip 'semua pernyataan salah'."
+      },
+      {
+        question: "Dalam teori game, dua pemain memilih angka 1-10. Jika jumlah angka genap, pemain A menang. Jika ganjil, pemain B menang. Strategi optimal pemain A adalah...",
+        options: ["Selalu pilih angka genap", "Selalu pilih angka ganjil", "Pilih acak 50:50", "Tidak ada strategi dominan"],
+        correctIndex: 3,
+        cognitiveSkillTag: "Game Theory",
+        explanation: "Jumlah genap terjadi jika keduanya genap atau keduanya ganjil. Tidak ada strategi murni yang dominan—ini adalah game simetris tanpa strategi murni optimal. Jawaban: tidak ada strategi dominan murni."
+      }
+    ];
+
+    // ======== GEMINI API ========
+    async function fetchQuestionsFromGemini() {
+      const systemInstruction = `Kamu adalah arsitek kognitif tingkat Mensa. Tugasmu: buat ${config.count} soal critical thinking berkualitas tinggi dalam bahasa Indonesia.
+
+SUBJECT: ${config.subject}
+DIFFICULTY: ${config.difficulty}
+
+ATURAN:
+- Setiap soal HARUS menguji penalaran analitis, lateral thinking, deduksi, atau pemecahan masalah—BUKAN hafalan.
+- Soal harus menantang, bukan trivia.
+- Sertakan 4 opsi jawaban yang masuk akal (1 benar, 3 distraktor cerdas).
+- cognitiveSkillTag harus spesifik (contoh: "First Principles", "Bias Detection", "Game Theory", "Deduksi Berlapis").
+- Explanation harus membedah logika langkah demi langkah dengan tajam.
+
+FORMAT OUTPUT: JSON array murni, tanpa markdown backticks.
+Setiap objek: { "question": string, "options": [string, string, string, string], "correctIndex": number (0-3), "cognitiveSkillTag": string, "explanation": string }`;
+
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(userApiKey)}`;
+
+      const body = {
+        contents: [{ role: "user", parts: [{ text: `Buat ${config.count} soal ${config.subject} tingkat ${config.difficulty}.` }] }],
+        systemInstruction: { parts: [{ text: systemInstruction }] },
+        generationConfig: {
+          responseMimeType: "application/json",
+          temperature: 0.7
+        }
+      };
+
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error?.message || 'API request failed');
+        }
+
+        const data = await res.json();
+        let text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!text) throw new Error('Empty response');
+
+        // Clean potential markdown
+        text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+        const questions = JSON.parse(text);
+
+        if (!Array.isArray(questions) || questions.length === 0) {
+          throw new Error('Invalid format');
+        }
+
+        return questions.slice(0, config.count);
+      } catch (err) {
+        console.warn('Gemini fetch failed, using demo:', err);
+        showToast('⚠️ Gagal ambil soal AI. Pakai soal demo dulu ya.');
+        return getDemoQuestions(config.count);
+      }
+    }
+
+    function getDemoQuestions(count) {
+      const shuffled = [...demoQuestions].sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, Math.min(count, demoQuestions.length));
+    }
+
+    // ======== QUIZ LOGIC ========
+    async function startQuiz() {
+      playClick();
+      
+      // Determine questions
+      if (userApiKey) {
+        startQuizBtn.disabled = true;
+        startQuizBtn.textContent = 'Mengkalibrasi soal AI...';
+        
+        quizState.questions = await fetchQuestionsFromGemini();
+        
+        startQuizBtn.disabled = false;
+        startQuizBtn.textContent = 'Mulai Sesi +1 IQ →';
+      } else {
+        quizState.questions = getDemoQuestions(config.count);
+      }
+
+      // Reset state
+      quizState.currentIndex = 0;
+      quizState.correctCount = 0;
+      quizState.wrongCount = 0;
+      quizState.timeElapsed = 0;
+      quizState.answered = false;
+      quizState.sessionIQGain = 0;
+
+      // Switch screens
+      configScreen.style.display = 'none';
+      resultsScreen.style.display = 'none';
+      quizScreen.style.display = 'flex';
+
+      quizSubjectLabel.textContent = config.subject;
+      
+      // Start timer
+      clearInterval(quizState.timerInterval);
+      quizState.timerInterval = setInterval(() => {
+        quizState.timeElapsed++;
+        const mins = String(Math.floor(quizState.timeElapsed / 60)).padStart(2, '0');
+        const secs = String(quizState.timeElapsed % 60).padStart(2, '0');
+        timerDisplay.textContent = `${mins}:${secs}`;
+      }, 1000);
+
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = quizState.questions[quizState.currentIndex];
+      if (!q) return;
+
+      quizState.answered = false;
+      
+      // Update progress
+      const total = quizState.questions.length;
+      const current = quizState.currentIndex + 1;
+      quizProgressText.textContent = `Soal ${current} / ${total}`;
+      progressBarFill.style.width = `${((current - 1) / total) * 100}%`;
+      
+      questionNumber.textContent = `PERTANYAAN ${String(current).padStart(2, '0')}`;
+      questionText.textContent = q.question;
+
+      // Render options
+      optionsGrid.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span class="key-hint">${letters[idx]}</span> ${opt}`;
+        btn.dataset.index = idx;
+        btn.addEventListener('click', () => handleAnswer(idx));
+        optionsGrid.appendChild(btn);
+      });
+
+      // Hide explanation & next btn
+      explanationDrawer.classList.remove('open');
+      nextBtn.classList.remove('show');
+    }
+
+    function handleAnswer(selectedIdx) {
+      if (quizState.answered) return;
+      quizState.answered = true;
+
+      const q = quizState.questions[quizState.currentIndex];
+      const isCorrect = selectedIdx === q.correctIndex;
+      
+      // Disable all options
+      optionsGrid.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+
+      // Highlight correct/wrong
+      const selectedBtn = optionsGrid.querySelector(`[data-index="${selectedIdx}"]`);
+      const correctBtn = optionsGrid.querySelector(`[data-index="${q.correctIndex}"]`);
+
+      if (isCorrect) {
+        selectedBtn.classList.add('correct');
+        quizState.correctCount++;
+        playCorrect();
+      } else {
+        selectedBtn.classList.add('wrong');
+        correctBtn.classList.add('correct');
+        quizState.wrongCount++;
+        playWrong();
+      }
+
+      // Show explanation
+      explanationContent.innerHTML = `
+        <span class="tag">${q.cognitiveSkillTag || 'Analisis'}</span>
+        <div>${q.explanation || 'Tidak ada penjelasan.'}</div>
+      `;
+      explanationDrawer.classList.add('open');
+
+      // Show next button
+      nextBtn.classList.add('show');
+      nextBtn.textContent = quizState.currentIndex < quizState.questions.length - 1 
+        ? 'Soal Berikutnya →' 
+        : 'Lihat Hasil →';
+    }
+
+    function nextQuestion() {
+      playClick();
+      if (!quizState.answered) {
+        showToast('Jawab dulu soal ini!');
+        return;
+      }
+      
+      quizState.currentIndex++;
+      
+      if (quizState.currentIndex >= quizState.questions.length) {
+        finishQuiz();
+      } else {
+        renderQuestion();
+      }
+    }
+
+    function finishQuiz() {
+      clearInterval(quizState.timerInterval);
+      
+      const total = quizState.questions.length;
+      const accuracy = Math.round((quizState.correctCount / total) * 100);
+      
+      // Calculate IQ gain
+      let iqGain = 1; // Base +1 for completing
+      if (accuracy === 100) iqGain += 2; // Perfect bonus
+      else if (accuracy >= 80) iqGain += 1; // High accuracy bonus
+
+      quizState.sessionIQGain = iqGain;
+      currentIQ += iqGain;
+      localStorage.setItem('NEURO1_IQ', currentIQ);
+
+      // Update UI
+      updateIQDisplay(true);
+      
+      // Show results
+      quizScreen.style.display = 'none';
+      resultsScreen.style.display = 'flex';
+
+      iqGainDisplay.textContent = `+${iqGain} IQ`;
+      resultsScoreDisplay.innerHTML = `${accuracy}<span>%</span>`;
+      statCorrect.textContent = quizState.correctCount;
+      statWrong.textContent = quizState.wrongCount;
+      statAccuracy.textContent = `${accuracy}%`;
+
+      if (accuracy === 100) {
+        resultsIcon.textContent = '🏆';
+        resultsTitle.textContent = 'Sempurna!';
+        resultsSubtitle.textContent = 'Lo bener-bener di level Mensa. IQ lo meroket!';
+      } else if (accuracy >= 80) {
+        resultsIcon.textContent = '🎯';
+        resultsTitle.textContent = 'Sesi Selesai!';
+        resultsSubtitle.textContent = 'Nalar kritis lo tajam. Pertahankan!';
+      } else if (accuracy >= 50) {
+        resultsIcon.textContent = '🧠';
+        resultsTitle.textContent = 'Lumayan!';
+        resultsSubtitle.textContent = 'Masih ada ruang buat asah logika. Coba lagi!';
+      } else {
+        resultsIcon.textContent = '💡';
+        resultsTitle.textContent = 'Terus Belajar!';
+        resultsSubtitle.textContent = 'Setiap sesi bikin lo makin tajam. Jangan nyerah.';
+      }
+
+      playComplete();
+
+      // Update leaderboard
+      renderLeaderboard();
+    }
+
+    // ======== LEADERBOARD ========
+    const defaultLeaderboard = [
+      { name: 'Rizky Pratama', iq: 145, badge: 'Ahli Deduksi', avatar: 'RP' },
+      { name: 'Sinta Dewi', iq: 138, badge: 'Tak Terkalahkan', avatar: 'SD' },
+      { name: 'Budi Santoso', iq: 132, badge: 'Logika Murni', avatar: 'BS' },
+      { name: 'Maya Anggraini', iq: 128, badge: 'Analis Cepat', avatar: 'MA' },
+      { name: 'Fajar Nugroho', iq: 125, badge: 'Strategi', avatar: 'FN' },
+      { name: 'Dewi Lestari', iq: 120, badge: 'Paradoks', avatar: 'DL' },
+      { name: 'Andi Wijaya', iq: 118, badge: 'Kritis', avatar: 'AW' }
+    ];
+
+    function getLeaderboardData(filter) {
+      // Simulate today's data (slightly shuffled)
+      const todayData = defaultLeaderboard.map((item, idx) => ({
+        ...item,
+        iq: item.iq - (idx * 2) + (Math.random() > 0.5 ? 1 : -1)
+      }));
+
+      const data = filter === 'today' ? todayData : defaultLeaderboard;
+      
+      // Insert current user
+      const userName = localStorage.getItem('NEURO1_NAME') || 'Kamu';
+      const userEntry = { 
+        name: userName, 
+        iq: currentIQ, 
+        badge: currentIQ >= 130 ? 'Mode Jenius' : 'Pemula', 
+        avatar: userName.slice(0, 2).toUpperCase(),
+        isUser: true 
+      };
+
+      const combined = [...data, userEntry];
+      combined.sort((a, b) => b.iq - a.iq);
+      
+      return combined.slice(0, 10);
+    }
+
+    function renderLeaderboard(filter = 'today') {
+      const data = getLeaderboardData(filter);
+      leaderboardList.innerHTML = '';
+
+      data.forEach((entry, idx) => {
+        const row = document.createElement('div');
+        row.className = `lb-row ${entry.isUser ? 'highlight' : ''}`;
+        
+        const rankClass = idx < 3 ? 'top' : '';
+        
+        row.innerHTML = `
+          <div class="lb-rank ${rankClass}">${idx + 1}</div>
+          <div class="lb-avatar">${entry.avatar}</div>
+          <div class="lb-name">${entry.name} ${entry.isUser ? ' (Lo)' : ''}</div>
+          <div class="lb-badge">${entry.badge}</div>
+          <div class="lb-iq">${entry.iq} IQ</div>
+        `;
+        
+        leaderboardList.appendChild(row);
+      });
+    }
+
+    lbTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        playClick();
+        lbTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        renderLeaderboard(tab.dataset.filter);
+      });
+    });
+
+    // ======== API KEY MODAL ========
+    apiPillBtn.addEventListener('click', () => {
+      playClick();
+      apiKeyInput.value = userApiKey;
+      apiKeyInput.type = 'password';
+      apiModal.classList.add('active');
+    });
+
+    closeApiModal.addEventListener('click', () => apiModal.classList.remove('active'));
+    apiModal.addEventListener('click', (e) => {
+      if (e.target === apiModal) apiModal.classList.remove('active');
+    });
+
+    toggleVisBtn.addEventListener('click', () => {
+      playClick();
+      apiKeyInput.type = apiKeyInput.type === 'password' ? 'text' : 'password';
+      toggleVisBtn.textContent = apiKeyInput.type === 'password' ? '👁️' : '🙈';
+    });
+
+    saveApiKeyBtn.addEventListener('click', () => {
+      const key = apiKeyInput.value.trim();
+      if (!key) {
+        showToast('⚠️ Key tidak boleh kosong.');
+        return;
+      }
+      userApiKey = key;
+      localStorage.setItem('NEURO1_GEMINI_KEY', key);
+      apiModal.classList.remove('active');
+      updateAPIUI();
+      showToast('✅ API Key tersimpan. Siap menghasilkan soal AI!');
+      playCorrect();
+    });
+
+    clearApiKeyBtn.addEventListener('click', () => {
+      userApiKey = '';
+      localStorage.removeItem('NEURO1_GEMINI_KEY');
+      apiModal.classList.remove('active');
+      updateAPIUI();
+      showToast('🗑️ API Key dihapus. Beralih ke mode demo.');
+      playClick();
+    });
+
+    // ======== MUTE ========
+    muteBtn.addEventListener('click', () => {
+      isMuted = !isMuted;
+      localStorage.setItem('NEURO1_MUTE', isMuted);
+      updateMuteUI();
+      if (!isMuted) playClick();
+    });
+
+    // ======== KEYBOARD SHORTCUTS ========
+    document.addEventListener('keydown', (e) => {
+      if (quizScreen.style.display === 'none' || quizScreen.style.display === '') return;
+      
+      const key = e.key.toLowerCase();
+      
+      // 1-4 or A-D for answering
+      if (!quizState.answered) {
+        let idx = -1;
+        if (key >= '1' && key <= '4') idx = parseInt(key) - 1;
+        else if (key >= 'a' && key <= 'd') idx = key.charCodeAt(0) - 97;
+        
+        if (idx >= 0) {
+          e.preventDefault();
+          handleAnswer(idx);
+        }
+      }
+      
+      // Enter for next
+      if (key === 'enter' && quizState.answered) {
+        e.preventDefault();
+        nextQuestion();
+      }
+    });
+
+    // ======== NAVIGATION ========
+    startQuizBtn.addEventListener('click', startQuiz);
+    nextBtn.addEventListener('click', nextQuestion);
+
+    retryBtn.addEventListener('click', () => {
+      playClick();
+      resultsScreen.style.display = 'none';
+      configScreen.style.display = 'flex';
+    });
+
+    // ======== INIT ========
+    function init() {
+      updateAPIUI();
+      updateIQDisplay();
+      updateMuteUI();
+      renderLeaderboard();
+      
+      // Set initial custom topic if user has one
+      const savedTopic = localStorage.getItem('NEURO1_TOPIC');
+      if (savedTopic) {
+        config.subject = savedTopic;
+      }
+    }
+
+    init();
+
+    // Save topic on change
+    customTopicInput.addEventListener('change', () => {
+      if (customTopicInput.value.trim()) {
+        localStorage.setItem('NEURO1_TOPIC', customTopicInput.value.trim());
+      }
+    });
+
+  </script>
+</body>
+</html>
